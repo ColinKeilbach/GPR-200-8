@@ -1,0 +1,18 @@
+#version 300 es
+
+layout (location = 0) in vec4 aPosition;
+//layout (location = 2) in vec2 aTexcoord;
+
+out vec2 vTexcoord;
+
+void main()
+{
+	gl_Position = aPosition;
+
+	//vTexcoord = aTexcoord;
+	vTexcoord = aPosition.xy * 0.5 + 0.5; //moves into screen space
+
+	//calculating the uv here is faster because there are only 4 vertices
+	//vs thousands of fragments
+	//this means this runs only 4 times
+}

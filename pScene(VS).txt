@@ -1,0 +1,21 @@
+#version 300 es
+
+layout (location = 0) in vec4 aPosition;
+layout (location = 1) in vec3 aNormal;
+
+uniform mat4 uModelMat, uViewMat, uProjMat;
+
+out vec4 vNormal;
+
+void main()
+{
+	//gl_Position = aPosition;
+
+	//gl_Position = uModelMat * aPosition;
+
+	//gl_Position = uViewMat * uModelMat * aPosition;
+
+	gl_Position = uProjMat * uViewMat * uModelMat * aPosition; // w = distance from the viewer
+
+	vNormal = vec4(aNormal, 0.0);
+}

@@ -1,0 +1,23 @@
+#version 300 es
+
+#ifdef GL_ES
+precision highp float; // If GLSL ES is detected, add required precision setting.
+#endif // GL_ES
+
+layout (location = 0) out vec4 rtFragColor;
+
+in vec2 vTexcoord;
+
+uniform vec2 uResolution; //vec2 ViewportSize
+uniform sampler2D uTex; // represented by '0'
+//uTex in variable is int 0
+
+void main() {
+	//sampler, uv
+	// uv = screen location / screen resolution
+	//vec2 uv = gl_FragCoord.xy / uResolution;
+	vec2 uv = vTexcoord;
+	vec4 col = texture(uTex, uv);
+
+	rtFragColor = col; //draws to ScreenQuadNDC -> gFSQ
+}
