@@ -7,6 +7,18 @@ uniform mat4 uModelMat, uViewMat, uProjMat;
 
 out vec4 vNormal;
 
+//for fragment lighting
+out vec4 vLightPoint;
+out float vIntensity;
+out vec4 vPosition;
+out vec4 vCamera;
+
+//LIGHT STRUCTURE
+struct pLight {
+	vec4 center;
+	float intensity;
+};
+
 void main()
 {
 	//gl_Position = aPosition;
@@ -18,4 +30,15 @@ void main()
 	gl_Position = uProjMat * uViewMat * uModelMat * aPosition; // w = distance from the viewer
 
 	vNormal = vec4(aNormal, 0.0);
+	
+	//Light setup
+	//object-space
+	pLight light;
+	light.center = vec4(1.0);
+	light.intensity = 5.0;
+	vPosition = aPosition * uModelMat; //postion in object-space
+	vCamera = uModelMat * aPosition;
+	//Moves the lights into object-space
+	vLightPoint = (light.center + aPosition) * uModelMat;
+	vIntensity = light.intensity;
 }
