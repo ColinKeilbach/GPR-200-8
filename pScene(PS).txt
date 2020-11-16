@@ -19,18 +19,15 @@ layout (location = 0) out vec4 rtFragColor;
 
 in vec4 vNormal;
 
-in vec4 vLightPoint;
+in vec4 vLightDirection;
 in float vIntensity;
 in vec4 vPosition;
-in vec4 vCamera;
 
 //-------------------------------------------------------------------------------------
 //LIGHT CALCULATIONS
-void lightCalc(out float diffuseIntensity, out float specularIntensity, in vec4 light, in float intensity, in vec4 position, in vec4 camera){
+void lightCalc(out float diffuseIntensity, out float specularIntensity, in vec4 direction, in float intensity, in vec4 position, in vec4 camera){
 	//specularIntensity calculation
-	vec4 direction = position - light;
-
-	vec4 halfwayVector = normalize( -direction - camera);
+	vec4 halfwayVector = normalize(direction - camera);
 
 	float specularCoefficient = max(0.0, dot(vNormal, vec4(halfwayVector.xyz, 0.0)));
 	
@@ -39,11 +36,9 @@ void lightCalc(out float diffuseIntensity, out float specularIntensity, in vec4 
 	//diffuseIntensity calculation
 	float dist = length(direction);
 	
-	vec4 lightNormal = normalize(light - camera);
-	
-	float diffuseCoefficient = max(0.0, dot(vNormal, lightNormal)); //max stops it from being negative
+	float diffuseCoefficient = max(0.0, dot(vNormal, direction)); //max stops it from being negative
 
-	float attenuatedIntensity = 1.0 / (1.0 + dist / intensity) + sq(dist) / sq(intensity);
+	float attenuatedIntensity = 1.0 / (1.0 + dist / intensity + sq(dist) / sq(intensity));
 	
 	diffuseIntensity = diffuseCoefficient * attenuatedIntensity;
 }
@@ -54,10 +49,9 @@ void main() {
 	
 	//Light
 	float diffuseIntensity, specularIntensity;
-	lightCalc(diffuseIntensity, specularIntensity, vLightPoint, vIntensity, vPosition, vCamera);
+	lightCalc(diffuseIntensity, specularIntensity, vLightDirection, vIntensity, vPosition, vec4(0.0)); //camera is 0,0,0 in view-space
 	
-	rtFragColor += (diffuseIntensity * vec4(1.0) + specularIntensity * vec4(1.0));
-	rtFragColor *= 0.5;
+	rtFragColor = 0.5 * rtFragColor + (diffuseIntensity * vec4(1.0) + specularIntensity * vec4(1.0)); //0.5 is ambient light
 	//go to objects
 	//create RT rtScene
 	//change Properties for the program
