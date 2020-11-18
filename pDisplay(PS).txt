@@ -11,13 +11,15 @@ in vec2 vTexcoord;
 uniform vec2 uResolution; //vec2 ViewportSize
 uniform sampler2D uTex; // represented by '0'
 //uTex in variable is int 0
+uniform sampler2D uTex1; // represented by 1
 
 void main() {
 	//sampler, uv
 	// uv = screen location / screen resolution
 	//vec2 uv = gl_FragCoord.xy / uResolution;
 	vec2 uv = vTexcoord;
-	vec4 col = texture(uTex, uv);
+	vec4 col = texture(uTex, uv) + texture(uTex1, uv);
+	col *= 0.5; // adverages the bloom and scene
 
 	rtFragColor = col; //draws to ScreenQuadNDC -> gFSQ
 }
