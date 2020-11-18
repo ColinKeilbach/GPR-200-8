@@ -22,6 +22,9 @@ in vec4 vNormal;
 in vec4 vLightDirection;
 in float vIntensity;
 in vec4 vPosition;
+in vec2 vTexcoord;
+
+uniform sampler2D uTex; // represented by 0
 
 //-------------------------------------------------------------------------------------
 //LIGHT CALCULATIONS
@@ -45,7 +48,13 @@ void lightCalc(out float diffuseIntensity, out float specularIntensity, in vec4 
 
 void main() {
 	//rtFragColor = vNormal;
+	//Solid Color
 	rtFragColor = vec4(1.0, 0.0, 0.0, 1.0);
+	//Texture
+	//rtFragColor = vec4(vTexcoord, 0.0, 1.0); //shows uv of geometry
+	vec2 uv = vTexcoord;
+	uv.x *= -1.0; //flip uv across the y axis so that the texture is in the right spot
+	rtFragColor = texture(uTex, uv);
 	
 	//Light
 	float diffuseIntensity, specularIntensity;
